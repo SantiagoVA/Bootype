@@ -1,130 +1,61 @@
-import {config} from 'dotenv';
+import { config } from 'dotenv';
 config();
-import {Client} from 'discord.js';
-import {prefix} from './config.json'
+import Discord, { Client } from 'discord.js';
+import { prefix } from './config.json'
+import * as path from 'path';
+import * as fs from 'fs';
 
 const client: Client = new Client();
+export const Commands: any[] = []
 
-client.on('ready', () => {
-    console.log('OK the bot is ready :)')
+const root: string = path.resolve(`./src/commands`);
+console.log(root)
+const paths: string[] = fs.readdirSync(root);
+
+if (paths.length) {
+  for (const pathF of paths) {
+    const pathRute: string = path.resolve(root, pathF);
+
+    const pathInfo: fs.Stats = fs.statSync(pathRute);
+    if (pathInfo.isDirectory()) {
+      const files: string[] = fs.readdirSync(pathRute);
+      if (files.length) {
+        for (const file of files) {
+          if (!file.endsWith('.ts')) {
+            continue;
+          }
+          const CommandFunction = require(`${__dirname}/commands/${pathF}/${file}`);
+          if (CommandFunction) {
+            Commands.push(CommandFunction);
+          }
+        }
+      }
+    }
+  }
+}
+
+client.on('ready', async () => {
+  await client.user!.setActivity('-info | Developement me', {
+    type: "PLAYING"
+  })
+  console.log('OK the bot is ready :)')
 });
 
-client.on('message', (message) => {
-    const messageReplace = message.content.replace('- ', '-'); 
-    const messageEdited = messageReplace.toLowerCase();
-    const embedAvatar:object = {
-        color: "RANDOM",
-        title: "Your avatar",
-        image: {
-            url: `${message.author.displayAvatarURL()}`,
-        },
-    }
-    const embedInfo:object = {
-        color: "RANDOM",
-        title: "Info Bootype",
-        description: "***Comandos***",
-        thumbnail: {
-            url: 'https://discord.com/assets/322c936a8c8be1b803cd94861bdfa868.png',
-        },
-        fields:[
-            {
-                name: '-info o -help',
-                value: '> Información acerca del bot',
-            },
-            {
-                name: '-surprise',
-                value: '> Sorpresa ¿?',
-                inline: false,
-            },{
-                name: '-8ball',
-                value: '> Pregunta cosas, Bootype te respondera',
-                inline: false,
-            },
-            {
-                name: '-avatar',
-                value: '> Mira tu avatar',
-                inline: false,
-            },
-            {
-                name: 'Hola Bootype',
-                value: '> Bootype te saludara :)',
-                inline: false,
-            },
-            { name: '\u200B', value: '\u200B' },
-        ],
-        footer: {
-            text: 'Creado por https://github.com/SantiagoVA',
-            icon_url: 'https://cdn.discordapp.com/avatars/327969317822005249/cd4c3191714fd6f76c239bf0be90f7a4.png?size=128',
-        }
-        
-    }
+client.on('message', async (message) => {
+  const args = message.content.slice(prefix.length).trim().split(/ +/g)
+  let command = args.shift()!.toLowerCase();
 
-    const embedNo:object = {
-        color: "RANDOM",
-        title: "No 100%",
-        description: "Mmmmm NO!",
-        thumbnail: {
-            url: "https://media.tenor.com/images/83d3b6d69d66da8e4f9bb93c4ca17621/tenor.gif"
-        },
+  if(Commands.length) {
+    for await (const cmd of Commands) {
+      //console.log(cmd)
+      if(cmd.info.aliases.includes(command) || cmd.info.name.toLowerCase() === command) {
+        await cmd.default(client, message, args)
+      }
     }
+  } else {
+    console.log("No hay comandos")
+  }
 
-    const embedMaybe:object = {
-        color: "RANDOM",
-        title: "Tal vez si tal vez no, la verdad no sé",
-        description: "Ni la mas remota idea",
-        thumbnail:{
-            url: "https://media.tenor.com/images/e8cf962fcac36034e26d119b180f383d/tenor.gif"
-        },
-    }
-
-    const embedYes:object = {
-        color: "RANDOM",
-        title: "Definitivamente si",
-        description: "Claro que si... 😏",
-        thumbnail:{
-            url: "http://media.tumblr.com/tumblr_li62tmsdbS1qf991p.gif"
-        },
-    }
-
-    
-    if(messageEdited.startsWith('Hola Bootype')){
-        message.reply(`Hola!`)
-    }
-
-    if(messageEdited.startsWith(`${prefix}avatar`)){
-        message.channel.send({ embed: embedAvatar })
-    }
-
-    if(messageEdited.startsWith(`${prefix}info`) || messageEdited.startsWith(`${prefix}help`)){
-        message.channel.send({ embed: embedInfo })
-    }
-
-    if(messageEdited.startsWith(`${prefix}8ball`)){
-        const randomNum:number = Math.random() * 10;
-        console.log(randomNum)
-        if(randomNum < 3.33){
-
-            message.channel.send({ embed: embedNo })
-        
-        } else if(randomNum >= 3.33 && randomNum <= 6.65){
-
-            message.channel.send({ embed: embedMaybe })
-        
-        } else if (randomNum >= 6.66 && randomNum <= 10){
-            
-            message.channel.send({ embed: embedYes })
-        
-        }
-    }
-
-    if(message.content.startsWith(`${prefix}surprise`)){
-        for(let i = 0; i <= 100; i++){
-            setTimeout(function(){
-                message.author.send("Vaya... una mala sorpresa jaja")
-            }, 10);
-        }
-    }
 });
-
 
 client.login(process.env.TOKEN_DISCORD);
