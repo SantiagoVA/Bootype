@@ -10,15 +10,16 @@ client.on('ready', () => {
 });
 
 client.on('message', (message) => {
-    const id = message.member?.user.id; 
-    const embedAvatar = {
+    const messageReplace = message.content.replace('- ', '-'); 
+    const messageEdited = messageReplace.toLowerCase();
+    const embedAvatar:object = {
         color: "RANDOM",
         title: "Your avatar",
         image: {
             url: `${message.author.displayAvatarURL()}`,
         },
     }
-    const embedInfo = {
+    const embedInfo:object = {
         color: "RANDOM",
         title: "Info Bootype",
         description: "***Comandos***",
@@ -27,16 +28,20 @@ client.on('message', (message) => {
         },
         fields:[
             {
-                name: '->info',
+                name: '-info o -help',
                 value: '> Información acerca del bot',
             },
             {
-                name: '->surprise',
+                name: '-surprise',
                 value: '> Sorpresa ¿?',
+                inline: false,
+            },{
+                name: '-8ball',
+                value: '> Pregunta cosas, Bootype te respondera',
                 inline: false,
             },
             {
-                name: '->avatar',
+                name: '-avatar',
                 value: '> Mira tu avatar',
                 inline: false,
             },
@@ -53,45 +58,62 @@ client.on('message', (message) => {
         }
         
     }
+
+    const embedNo:object = {
+        color: "RANDOM",
+        title: "No 100%",
+        description: "Mmmmm NO!",
+        thumbnail: {
+            url: "https://media.tenor.com/images/83d3b6d69d66da8e4f9bb93c4ca17621/tenor.gif"
+        },
+    }
+
+    const embedMaybe:object = {
+        color: "RANDOM",
+        title: "Tal vez si tal vez no, la verdad no sé",
+        description: "Ni la mas remota idea",
+        thumbnail:{
+            url: "https://media.tenor.com/images/e8cf962fcac36034e26d119b180f383d/tenor.gif"
+        },
+    }
+
+    const embedYes:object = {
+        color: "RANDOM",
+        title: "Definitivamente si",
+        description: "Claro que si... 😏",
+        thumbnail:{
+            url: "http://media.tumblr.com/tumblr_li62tmsdbS1qf991p.gif"
+        },
+    }
+
     
-    if(message.content.startsWith('Hola Bootype')){
+    if(messageEdited.startsWith('Hola Bootype')){
         message.reply(`Hola!`)
     }
 
-    if(message.content.startsWith(`${prefix}avatar`)){
+    if(messageEdited.startsWith(`${prefix}avatar`)){
         message.channel.send({ embed: embedAvatar })
     }
 
-    if(message.content.startsWith(`${prefix}info`)){
+    if(messageEdited.startsWith(`${prefix}info`) || messageEdited.startsWith(`${prefix}help`)){
         message.channel.send({ embed: embedInfo })
     }
 
-    if(message.content.startsWith(`${prefix}roll`)){
+    if(messageEdited.startsWith(`${prefix}8ball`)){
         const randomNum:number = Math.random() * 10;
         console.log(randomNum)
         if(randomNum < 3.33){
 
-            const embedNo = {
-                color: "RANDOM",
-                Title: "No...",
-                Image: "https://media.tenor.com/videos/083986f9772a1f81826dc34bad540ba6/mp4"
-            }
-
             message.channel.send({ embed: embedNo })
+        
         } else if(randomNum >= 3.33 && randomNum <= 6.65){
-            const embedMaybe = {
-                color: "RANDOM",
-                Title: "Tal vez si tal vez no, la verdad no sé",
-                Image: "https://media.tenor.com/videos/c05cd4089127b4f35891c729cbc39a08/mp4"
-            }
+
             message.channel.send({ embed: embedMaybe })
+        
         } else if (randomNum >= 6.66 && randomNum <= 10){
-            const embedYes = {
-                color: "RANDOM",
-                Title: "Definitivamente si",
-                Image: "https://media.tenor.com/videos/50ade06892a0b5822b28140f830a5294/mp4"
-            }
+            
             message.channel.send({ embed: embedYes })
+        
         }
     }
 
