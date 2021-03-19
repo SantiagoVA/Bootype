@@ -7,7 +7,7 @@ export default async (client: Client, message: Message, args: string[]) => {
     .setTitle('Info Bootype')
     .setColor('RANDOM')
     .setDescription('Bootype is a discord bot made in typescript of general purposes')
-    .setThumbnail('https://cdn.discordapp.com/avatars/821521809882611764/ba266e81738d91bf4301a34955b14b8a.png')
+    .setThumbnail('https://cdn.discordapp.com/avatars/821521809882611764/5d78cef8c4bb5beecfdc722e2eaa7415.png')
     .setFooter('(Developers) https://github.com/SantiagoVA/Bootype', 'https://cdn.discordapp.com/avatars/821521809882611764/ba266e81738d91bf4301a34955b14b8a.png')
 
   for await (const cmd of Commands) {
