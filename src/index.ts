@@ -35,7 +35,7 @@ if (paths.length) {
     }
   }
 }
-console.log('hola')
+
 client.on('ready', async () => {
   await client.user!.setActivity(`${prefix}info | Developement me`, {
     type: 'PLAYING'
