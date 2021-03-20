@@ -15,11 +15,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-<<<<<<< HEAD
     "axios": "^0.21.1",
-=======
     "canvas": "^2.7.0",
->>>>>>> 6d6bf71db110bb77319edc10d41db1f1f018e89f
     "discord.js": "^12.5.1"
   },
   "devDependencies": {
