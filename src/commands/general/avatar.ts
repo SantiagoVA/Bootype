@@ -1,4 +1,4 @@
-import Discord, { Client, Message, MessageEmbed } from 'discord.js'
+import Discord, { Client, Message } from 'discord.js'
 import Canvas from 'canvas'
 
 export default async (client: Client, message: Message, args: string[]) => {
