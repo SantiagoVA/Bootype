@@ -12,9 +12,9 @@ export default async(client: Client, message: Message, args: string[]) =>{
 
 	ctx.font = '30px sans-serif';
 	ctx.fillStyle = args[3];
-    if(args[2] == "bottom"){
-        ctx.fillText(args[1].replace(/-/g, " "), canvas.width / 10, canvas.height / 1.1);
-    } else {
+    if(args[2] === 'bottom'){
+        ctx.fillText(args[1].replace(/-/g, ' '), canvas.width / 10, canvas.height / 1.1);
+  } else {
         ctx.fillText(args[1].replace(/-/g, " "), canvas.width / 9, canvas.height / 14);
     }
 
